@@ -1,0 +1,1006 @@
+// COLORS
+$base-text-color: #454544
+$head-light: #acacac
+$link-bg: #ffffff
+$selected-row: #888
+$vb-orange: #fb5906
+
+// IMAGES
+
+// MIXINS
+=base-font
+    font-family: Helvetica, sans-serif
+=bcfff
+    background-color: #fff
+=caps
+    text-transform: uppercase
+=cfff
+    color: #fff
+=fix
+    border: 1px solid red
+=hidden
+    display: none
+=left
+    float: left
+=right
+    float: right
+
+// CSS RESET
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, 
+big, cite, code, del, dfn, em, font, img, input, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dl, 
+dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td
+    margin:  0
+    padding:  0
+    border:  0
+    outline:  0
+    font-weight:  inherit
+    font-style:  inherit
+    font-size:  100%
+    font-family:  inherit
+    vertical-align:  baseline
+    background:  transparent
+// remember to define focus styles!
+\:focus
+    outline:  0
+ol, ul
+    list-style:  none
+// tables still need 'cellspacing="0"' in the markup
+table
+    border-collapse:  collapse
+    border-spacing:  0
+caption, th, td
+    text-align:  left
+    font-weight:  normal
+blockquote:before, blockquote:after, 
+q:before, q:after
+    content:  ""
+blockquote, q
+    quotes:  "" ""
+// reset font-size so 1em = 10px
+html
+    font-size:  100.01%
+body
+    font-size:  62.5%
+
+// CLEARFIX
+.clear
+    clear: both
+    width: 100%
+    height: 0
+    line-height: 0
+    font-size: 0px
+    display: block
+* html .clear
+    overflow:  hidden 
+    // can't apply to .clear, safari2 has issues
+.clearfix:after
+    content:  "."
+    display:  block
+    height:  0
+    clear:  both
+    visibility:  hidden
+.clearfix
+    display:  inline-block
+// Hides from IE-mac
+* html .clearfix
+    height:  1%
+.clearfix
+    display:  block
+// End hide from IE-mac
+
+// UNIVERSAL STYLES
+html, body
+    height: 100%
+body
+    background-color: #FFFFFF
+    +base-font
+    line-height: 1
+a
+    cursor: pointer
+    text-decoration: none
+a.title
+    font-weight: bold
+p
+    margin-bottom: 10px
+.button
+    float: left
+    margin: 7px -4px 0 25px
+// these classes are used in cases where we need a script object or array in the 
+// HTML that we can pass to JavaScript, a dummy HTML element, or any hidden elemnt
+.hidden, .hidden-code, .mock
+    display: none !important
+.row
+    margin: 7px 0 0 10px
+strong, .strong
+    font-weight: bold
+sup
+    bottom: 0.4em
+    font-family: Verdana,Helvetica,Arial,sans-serif
+    font-size: 0.64em
+    height: 0
+    letter-spacing: 1px
+    line-height: 1
+    position: relative
+    vertical-align: baseline
+
+// TEXT COLORS
+body, .required
+    color: $base-text-color
+a
+    color: $vb-orange
+.title
+    color: $link-bg
+.notes a, .user span, .user a, .blog a, .support a
+    color: $head-light
+.timebox-body, .timebox-body a
+    +cfff
+
+// LOGIN
+.login-pass-row
+    margin-top: 6px
+.mlogin-user, .mlogin-pass
+    background-image: url('../image/text_box.png')
+    color: #244D98
+    float: left
+    font-size: 1.6em
+    height: 31px
+    margin-left: 40px
+    padding: 0 5px
+    width: 230px
+.mlabel-not-user 
+    margin-top: 10px
+
+.mlabel-user, .mlabel-pass 
+    color: #244d98
+    float: left
+    font-size: 1.6em
+    padding-top: 9px
+    width: 300px
+.mremember-text 
+    color: #244d98
+    float: left
+    font-size: 1.4em
+    margin: 21px 0 0 6px
+.mremember-me 
+    background-image: url('../image/checkbox_sprite.png')
+    background-position: 26px 0
+    float: left
+    height: 24px
+    margin: 16px 0 0 40px
+    width: 26px
+.login-box-blank
+    background-color: #E3ECF1
+.signupBtn
+    background-image: url("../image/signup_btn.png")
+    cursor: pointer
+    float: left
+    height: 37px
+    left: 0px
+    margin-left: 10px
+    margin-top: 7px
+    position: relative
+    top: 0px
+    width: 79px
+.signupBtnContent_1
+    background-image: url('../image/mobile/billing/signup/8bucks.jpg') 
+    border: 1px solid black
+    cursor: pointer
+    display: inline-block
+    height: 210px
+    margin: 4px 0 0 4px
+    position: relative
+    vertical-align: top
+    width: 290px
+.signupBtnContent_2
+    background-image: url('../image/mobile/billing/signup/tits.jpg') 
+    border: 1px solid black
+    cursor: pointer
+    display: inline-block
+    height: 210px
+    margin: 4px 0 0 4px
+    position: relative
+    vertical-align: top
+    width: 290px
+.signupBtnContent_3
+    background-image: url('../image/mobile/billing/signup/girls.jpg') 
+    border: 1px solid black
+    cursor: pointer
+    display: inline-block
+    height: 210px
+    margin: 4px 0 0 4px
+    position: relative
+    vertical-align: top
+    width: 290px
+
+.login-plan
+    float: left
+    top: 11px
+    left: 27px
+    
+// REGULAR STYLES
+.navigation
+    text-align: left
+.main-nav
+    font-size: 2.1em
+    padding: 4px 4px 10px 4px
+.main-nav-text
+    display: block
+    font-size: 0.75em
+    float: left
+    height: 5px
+    left: 120px
+    position: relative
+    top: -20px
+    .search-empty
+        cursor: pointer
+        display: inline-block
+        font-size: 15px
+        height: 18px
+        left: 5px
+        position: relative
+        top: -3px
+        -webkit-border-radius: 9px
+        width: 17px
+.search-button
+    background: url("../image/mobile/search.png") no-repeat scroll 0 top transparent
+    cursor: pointer
+    height: 27px
+    margin-right: 3px
+    position: absolute
+    right: 4px
+    top: 11px
+    width: 28px
+.search-form
+    left: 0
+    position: absolute
+    top: 0
+    width: 100%
+.search-field
+    +bcfff
+    border: 1px solid #999
+    display: none
+    font-size: 0.9em
+    height: 40px
+    left: 4px
+    padding: 2px 20px 2px 5px
+    position: absolute
+    top: 4px
+    width: 70%
+.search-empty
+    display: none
+    background-color: #B0B7C5
+    +cfff
+    font-family: Helvetica, sans-serif
+    font-size: 14px
+    font-weight: bold
+    height: 16px
+    margin-top: 6px
+    padding-left: 1px
+    position: absolute
+    right: 30.2%
+    top: 9px
+    text-align: center
+    -webkit-border-radius: 8px
+    width: 15px
+.search-cancel
+    display: none
+    float: right
+    font-size: 0.8em
+    height: 46px
+    margin: 1px 0 0 0
+    width: 27%
+.sub-nav
+    background-color: $link-bg
+    font-size: 1.7em
+    width: 100%
+.down-arrow-cat,
+.down-arrow-stash,
+.down-arrow-more,
+.down-arrow-cat-selected,
+.down-arrow-stash-selected,
+.down-arrow-more-selected
+    display: block
+    margin: -11px 0 0 71px
+    z-index: 1
+.down-arrow-stash,
+.down-arrow-stash-selected
+    margin-left: 46px
+.down-arrow-more,
+.down-arrow-more-selected
+    margin-left: 42px
+.down-arrow-cat-selected,
+.down-arrow-stash-selected,
+.down-arrow-more-selected
+    display: none
+.nav-tab
+    border-bottom: 1px solid $base-text-color
+    border-top: 1px solid $base-text-color
+    +cfff
+    display: block
+    float: left
+    padding: 2px 10px 9px
+.nav-tab.first
+    border-right: 1px solid $link-bg
+    width: 40%
+.tab-stash
+    width: 33%
+.tab-more
+    border-left: 1px solid $link-bg
+    width: 27%
+.tab-selected
+    +bcfff
+    color: $base-text-color
+    .down-arrow-cat, .down-arrow-stash, .down-arrow-more
+        display: none
+    .down-arrow-cat-selected,
+    .down-arrow-stash-selected,
+    .down-arrow-more-selected
+        display: block
+.nav-tab.first.tab-selected
+    border-right: 1px solid $base-text-color
+.tab-stash.tab-selected
+    border-left: 1px solid $base-text-color
+    border-right: 1px solid $base-text-color
+.tab-more.tab-selected
+    border-right: none
+    border-left: 1px solid $base-text-color
+.tab-disabled
+    color: #999
+    img
+        visibility: hidden
+.no-borders, .nav-tab.first.no-borders
+    border-right: none
+.nav-drop-downs
+    position: relative
+    width: 100%
+.cat-drop-down
+    display: none
+.nav-drop-down
+    +bcfff
+    border-bottom: 1px solid $base-text-color
+    border-right: 1px solid $base-text-color
+    border-top: none
+    clear: both
+    display: none
+    float: left
+    font-size: 1.7em
+    line-height: 1.7em
+    padding-right: 1px
+    position: absolute
+    top: 0
+    z-index: 2
+    li
+        padding: 0 7px
+    li.selected
+        background-color: $selected-row
+        a
+            +cfff
+    a
+        color: $base-text-color
+        display: block
+        height: 100%
+        width: 100%
+.nav-cat-left, .nav-cat-right
+    display: none
+    width: 40%
+.nav-cat-right
+    left: 40%
+.nav-more
+    border-left: 1px solid $base-text-color
+    border-right: none
+    padding-right: 0
+    right: -1px
+    width: 27%
+.content-column
+    clear: both
+    margin: 6px 10px 0px 10px
+    text-align: center
+.content
+    margin: 13px 0 0 0
+    position: relative
+.content-block
+    display: block
+    margin: 0 9px 7px 0
+    position: relative
+    width: 300px
+    vertical-align: top
+.content-thumb
+    border: 1px solid black
+    cursor: pointer
+    display: block
+    height: 217px
+    position: relative
+    overflow: hidden
+    width: 300px
+.content-thumb img
+    height: 217px
+    width: 300px
+.content-data
+    font-size: 1.45em
+    line-height: 1.18em
+    width: 300px
+.item-length
+    background-color: #000
+    bottom: 3px
+    display: block
+    padding: 2px
+    position: absolute
+    right: 3px
+    width: auto
+    opacity: 0.7
+.item-time
+    +cfff
+    display: none
+    font-size: 1.7em
+
+
+.msearch-div
+    padding-left: 12px
+    width: 310px
+.msearch-form
+    float: left
+    margin-top: 6px
+.mpage-btn
+    top: 13px
+.content-detail
+    background-color: grey
+    display: none
+    left: 592px
+    padding: 7px
+    position: absolute
+    top: 167px
+    color: white
+.page-btn-next
+    position: absolute
+.page-btn-prev
+    position: absolute
+    left: 20px
+.small-nav
+    height: 75px
+    width: 640px
+.text
+    font-size: 1.32em
+.container .header
+    min-width: 310px
+.logoutBtn
+    float: right
+    margin-right: 10px
+    margin-top: 7px
+    height: 40px
+    width: 140px
+    font-size: 1.9em
+    cursor: pointer
+.header_btn
+    float: right
+    margin-right: 7px
+    margin-top: 7px
+    cursor: pointer
+.fetchBtn, .backBtn
+    margin-right: 10px
+    margin-top: 7px
+    height: 40px
+    width: 140px
+    font-size: 1.9em
+    cursor: pointer
+.searchTxt
+    float: right
+    height: 21px
+    margin: 2px
+    font-size: 1.2em
+    text-transform: uppercase
+
+.zero-results
+    margin-top: 40px
+    font-size: 2.45em
+    height: 65px
+    position: relative
+    text-align: center
+.browse-dropdown-header
+    font-size: 1.3em
+    height: 65px
+    padding: 0px 30px
+.browse-dropdown
+    font-size: 1.3em
+    height: 32px
+    margin-top: 4px
+    margin-left: 4px
+    padding: 3px 7px
+    width: 250px
+.bad-password
+    color: red
+    font-size: 1.5em
+    font-style: italic
+    left: 62px
+    position: relative
+    top: 12px
+.caution
+    background-image: url('../image/mobile/login/caution.png')
+    float: left
+    height: 14px
+    left: 40px
+    position: relative
+    top: 11px
+    width: 16px
+    
+//////////////////////////BOOM BOOM STUFF///////////////////////  
+
+.message-link
+    @extend .bad-password
+    color: #244d98
+    cursor: pointer
+    padding-top: 8px
+    
+.message-link-inactive
+    cursor: auto
+    color: #8a8a8a   
+    
+.bb-header
+    height: 129px
+    width: 100%
+
+.login-block
+    background-color: #efefef
+    width: 256px
+    height: 200px
+    margin-top: -142px
+    margin-left: 363px
+    position: relative
+    float: left
+    display: none
+    padding: 20px 0 10px 0
+    -moz-border-radius: 5px
+    -webkit-border-radius: 5px
+    border-radius: 5px 
+
+.login-button
+    background-image: url('../image/login_btn.png')
+    cursor: pointer
+    display: inline-block
+    height: 37px
+    position: relative
+    right: 39px
+    top: 3px
+    width: 69px  
+    
+.fb-login
+    float: right
+    margin-top: 10px
+    margin-right: 15px
+    vertical-align: top
+    
+.logo-login
+    background-image: url('../image/bbc/logo1.png')
+    background-size: 200px 100px
+    background-repeat: no-repeat
+    float: left
+    height: 111px
+    left: 5px
+    position: relative
+    top: 3px
+    width: 219px
+    cursor: pointer
+
+.logo-home
+    @extend .logo-login
+    background-image: url('../image/bbc/logo2.png')
+    background-size: 200px 129px
+    height: 139px
+    top: 23px
+
+.welcome-banner
+    background-image: url('../image/bbc/welcome.png')
+    background-repeat: no-repeat
+    height: 293px
+    left: 188px
+    position: relative
+    top: -13px
+    width: 743px
+    
+.reg-form-home
+    top: 251px
+    left: 705px  
+    
+.reg-form-login
+    top: 116px
+    left: 21px    
+    
+.deck-card-reg-forms 
+    width: 150px
+    display: inline
+    padding: 20px 0 10px 0
+    background: #d2ecea
+    -moz-border-radius: 5px
+    -webkit-border-radius: 5px
+    border-radius: 5px
+    height: 263px
+    position: absolute
+
+.deck-card-reg-forms h2
+    font-family: Verdana
+    padding: 0
+    color: #fd6a11
+    font-weight: bold
+    margin-left: 11
+    font-size: 1.9em
+
+.form-text
+    width: 120px
+    color: #000
+    font-size: 1em
+    margin-top: 5px
+    margin-left: 13px
+    position: relative
+    -webkit-appearance: textfield
+    padding: 1px
+    background-color: white
+    border: 2px inset
+    border-image-source: initial
+    border-image-slice: initial
+    border-image-width: initial
+    border-image-outset: initial
+    border-image-repeat: initial
+    -webkit-rtl-ordering: logical
+    -webkit-user-select: text
+    cursor: auto
+
+.form-submit 
+    border: 1px solid #000
+    height: 23px
+    width: 52px
+    margin-top: 6px
+    margin-left: 14px
+
+.form-submit:hover
+    cursor: pointer
+
+.form-submit:active
+    background-color: #67a0cf
+
+.boomit-form-wrapper
+    margin-bottom: 27px
+    
+.reg-form-extra
+    font-size: 11px
+    margin: 0 10px
+    line-height: 1.6
+    font-family: Verdana,Arial
+
+.new-story-form-row
+    margin-left: 93px
+    
+.new-story-form-label
+    text-transform: uppercase
+    font-family: Georgia
+    font-size: 1.6em
+    text-align: left
+    
+.new-story-form-text    
+    @extend .form-text
+    font-size: 1.6em
+    height: 23px
+    width: 300px
+    margin-top: 12px
+    padding-top: 4px
+
+.new-story-form-text-card    
+    @extend .new-story-form-text
+    width: 60px
+    
+.new-story-form-textarea
+    @extend .new-story-form-text
+    height: 100px
+    width: 352px    
+    
+.new-story-card
+    position: absolute
+    left: 455px
+    top: 262    
+    
+.new-story-submit
+    width: 100px
+    height: 40px
+    border: 1px solid
+    border-color: black    
+    
+.bang-menu
+    background-image: url('../image/bbc/bang.png')
+    background-repeat: no-repeat
+    border: 1px solid
+    border-color: black
+    height: 36px
+    width: 36px
+    background-position: center
+    float: left
+    margin-top: 5px
+    margin-right: 5px
+    position: relative
+    left: 55px
+    .twitter
+        left: 11px
+    
+    
+.user-bucket
+    left: 635px
+    position: absolute
+    width: 341px
+    
+.user-info
+    float: right
+    width: 131px
+    margin-top: 5px
+    margin-right: 30px
+    border: 1px solid
+    border-color: black
+    height: 36px
+
+.user-name
+    margin-left: 44px
+    text-align: left
+    margin-top: 11px
+    font-family: Verdana,Arial
+    font-size: 1.2em        
+        
+.logout-btn
+    position: absolute
+    left: 191px
+    top: 52px
+    
+.homepage-boom
+    background-color: #efefef
+    font-family: Georgia
+    width: 100%
+    height: 745px
+    margin-top: 10px    
+    float: right
+    
+.homepage-boom h1
+    text-transform: uppercase
+    font-size: 1.5em
+    text-align: left
+    margin-top: 7px
+    margin-left: 93px
+
+.homepage-boom h3
+    font-size: 1.1em
+    text-align: left
+    margin-top: 7px
+    margin-left: 93px
+    
+.homepage-boom img
+    margin-top: 17px
+    margin-left: 22px
+    
+.boom-title
+    text-transform: uppercase
+    font-family: Georgia
+    font-size: 2.1em
+    font-style: italic
+    text-align: left
+    margin-left: 210px
+    margin-top: 15px
+    margin-bottom: 22px
+    
+.boom-select
+    float: left
+    margin-left: 20px
+ 
+.search-post
+    background-image: url('../image/bbc/hand_cards.jpg')
+    background-repeat: no-repeat
+    background-size: 37%
+    height: 217px
+    width: 428px
+    left: 708px
+    position: absolute
+    top: 47px
+    z-index: -1
+    
+.search-div
+    position: absolute
+    left: 10px
+    top: 200px    
+    
+.site-search
+    @extend .form-text    
+    width: 183px
+    height: 26px
+    color: black
+    font-size: 1.4em
+
+.post-div
+    position: absolute
+    left: 221px
+    top: 200px  
+.post-a-boom
+    @extend .form-text    
+    width: 625px
+    height: 26px
+    color: black
+    font-size: 1.4em
+    
+.fake-field
+    color: #afafaf 
+    
+.photo-grid
+    width: 844px
+    height: 100%
+    margin-top: -13px
+
+.photo_item
+    float: right
+    margin: 9px 0px 0px 9px
+    
+.mini-nav
+    position: relative
+    top: 7px
+    font-size: 1.5em
+    left: 409px
+    
+.mini-nav span
+    padding-right: 3px
+    cursor: pointer
+    text-decoration: underline
+    color: #fd6a11
+    &.inactive
+        text-decoration: none
+        color: #afafaf
+        cursor: auto
+    
+.signup-text
+    @extend .form-text
+    color: #244d98
+    font-size: 1.6em
+    width: 230px
+    height: 31px  
+    
+.code-text
+    text-transform: uppercase    
+    
+.signup-block
+    @extend .homepage-boom
+    width: 256px
+    height: 100%
+    margin-top: -77px
+    margin-left: 263px
+    position: relative
+    float: left  
+    padding: 20px 0 10px 0
+    -moz-border-radius: 5px
+    -webkit-border-radius: 5px
+    border-radius: 5px  
+     
+.spinner
+    position: fixed
+    top: 50%
+    left: 50%
+    margin-left: -16px
+    margin-top: -16px
+    text-align: center
+    z-index: 1234
+    overflow: auto
+    width: 32px
+    height: 32px
+
+.overlay 
+    position: fixed 
+    left: 0px 
+    top: 0px
+    width: 100% 
+    height: 100% 
+    z-index: 100
+    background: #666666 url("images/ui-bg_diagonals-thick_20_666666_40x40.png") 50% 50% repeat
+    opacity: .5
+    filter: Alpha(Opacity=50)
+
+.home-map
+    position: relative
+    top: 65px
+    left: 472px
+    width: 300px
+    height: 200px
+
+.say-play-text
+    width: 478px
+    height: 23px
+    font-size: 1.83em
+    border-style: solid
+    border-color: black
+    border-width: 1px
+    margin-top: 3px
+    
+.say-play-block
+    position: relative
+    left: 200px
+    top: 10px
+    width: 491px
+    
+.bucket
+    border-style: solid
+    border-color: black
+    border-width: 1px
+    position: relative
+    float: left
+    
+.nav-bucket
+    @extend .bucket
+    top: 0px
+    left: 0px
+    width: 200px
+    height: 100%
+.photo-bucket
+    @extend .bucket
+    top: 0px
+    left: 0px
+    width: 700px
+    height: 100%
+    
+.stream-bucket
+    @extend .bucket
+    top: 0px
+    left: 0px
+    width: 200px
+    height: 100%
+    
+.card-div
+    float: left 
+
+.card-header
+    position: absolute
+    width: 174px
+    height: 18px    
+    background-color: beige
+    margin-top: 17px
+    margin-left: 22px
+    padding-left: 34px
+    padding-top: 4px
+    font-family: sans-serif
+    font-size: 1.1em
+
+.card-footer
+    position: absolute
+    width: 198px
+    height: 56px
+    background-color: white
+    margin-top: -56px
+    margin-left: 22px
+    padding-left: 6px
+    padding-top: 4px
+    font-family: sans-serif
+    font-size: 1.1em
+    
+.card-avatar
+    background-image: url('../image/bbc/default.png')
+    background-repeat: no-repeat
+    border: 1px solid
+    border-color: black
+    height: 20px
+    width: 20px
+    background-position: center
+    float: left
+    margin-right: 8px
+    
+.card-story
+    width: 166px
+    margin-left: 30px
+    height: 34px
+    overflow: hidden
+    
+.card-globe
+    float: left
+    height: 20px
+    width: 77px
+    position: relative
+    top: 2px
+    left: 122px
+    cursor: pointer
+    
+.card-globe img
+    height: 20px
+    width: 20px
+    margin-top: -2px
+    
+.map-it
+    position: relative
+    top: -7px
+    left: 0px
+    

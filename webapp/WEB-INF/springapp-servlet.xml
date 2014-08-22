@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:dwr="http://www.directwebremoting.org/schema/spring-dwr"
+     xmlns:tx="http://www.springframework.org/schema/tx"
+     xmlns:aop="http://www.springframework.org/schema/aop"
+     xmlns:context="http://www.springframework.org/schema/context"
+     xmlns:neo4j="http://www.springframework.org/schema/data/neo4j"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                http://www.springframework.org/schema/context
+                http://www.springframework.org/schema/context/spring-context-2.5.xsd
+                http://www.springframework.org/schema/tx
+                http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+                http://www.springframework.org/schema/data/neo4j
+                http://www.springframework.org/schema/data/neo4j/spring-neo4j.xsd
+                http://www.springframework.org/schema/aop 
+                http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+       
+      <context:annotation-config />
+      <context:component-scan base-package="org.gardella.web" />
+      <context:property-placeholder location="/WEB-INF/environment.properties" />
+		
+	    <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
+	        <property name="order" value="3" />
+	    </bean>
+		  <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+		    <property name="order" value="2" />
+		  </bean>		
+		    <!-- view handlers for json responses -->      
+		  <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		     <property name="order" value="1" />
+		      <property name="mediaTypes">
+		          <map>
+		              <entry key="json" value="application/json"/>
+		          </map>
+		      </property>
+		      <property name="defaultViews">
+		          <list>
+		              <bean class="org.gardella.util.web.MappingJacksonJsonpView">
+		                 <property name="makePretty" value="true"/>
+		              </bean>
+		          </list>
+		      </property>
+		  </bean>
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/jsp/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+    
+    <!-- DATA SOURCE BEANS -->
+    <bean id="gardellaDataSource" class="com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource">
+        <property name="user" value="${gardella.jdbc.user}"/>
+        <property name="password" value="${gardella.jdbc.pass}"/>
+        <property name="databaseName" value="${gardella.jdbc.dbname}"/>
+        <property name="serverName" value="${gardella.jdbc.servername}"/>
+    </bean>
+    
+
+    <!--  DAO BEANS -->
+    <bean name="userDAO" class="org.gardella.security.dao.UserDAO">
+        <property name="dataSource" ref="gardellaDataSource"/>
+    </bean>  
+
+    <!-- SERVICES -->
+    <bean name="cyptoService" class="org.gardella.security.service.CryptoService"/>
+
+    <bean name="smsService" class="org.gardella.service.SMSService">
+        <property name="gvoiceNumber" value="${sms.gvoice.number}"/>
+        <property name="gvoiceUser" value="${sms.gvoice.user}"/>
+        <property name="gvoicePass" value="${sms.gvoice.pass}"/>
+    </bean>
+    
+    <bean name="nlpService" class="org.gardella.service.NLPService"/>
+
+    <!-- MAIL BEANS -->
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+      <property name="host" value="smtp.gmail.com"/>
+      <property name="port" value="587"/>
+      <property name="username" value="ben@hitplay.com"/>
+      <property name="password" value="bgAsdf123"/>
+      
+    </bean>
+  <bean name="emailService" class="org.gardella.security.service.EmailService">
+    <property name="mailSender" ref="mailSender"/>
+  </bean>
+
+</beans>
