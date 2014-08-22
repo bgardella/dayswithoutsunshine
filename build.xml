@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="gardella" basedir=".">
+
+	<property name="classes.dir" value="webapp/WEB-INF/classes"/>
+	<property name="name" value="dayswithoutsunshine"/>
+	
+  <path id="master-classpath">
+      <fileset dir="webapp/WEB-INF/lib">
+          <include name="*.jar"/>
+      </fileset>
+      <pathelement path="${classes.dir}"/>
+  </path>
+
+
+	 <target name="clean" description="clean all compiled files">
+	    <delete dir="${classes.dir}"/>
+	    <delete file="${war.dir}/${name}.war"/>
+	 	  <delete dir="output"/>
+	  </target>
+	
+  <target name="compile" description="Compiles .java files in src/ using jars from lib/ and dependencies.">
+    <echo message="COMPILING ${ant.project.name}"/>
+    <mkdir dir="${classes.dir}"/>
+    <javac destdir="${classes.dir}"
+           includeantruntime="false"
+           debug="true"
+           debuglevel="lines,vars,source"
+           fork="true"
+           memoryinitialsize="256m"
+           memorymaximumsize="256m">
+      <src path="src"/>
+      <classpath refid="master-classpath"/>
+    </javac>
+  </target>
+	
+  <target name="war" depends="compile" description="makes war file">
+    <mkdir dir="output/ant/webinflib"/>
+    <copy flatten="true" todir="output/ant/webinflib">
+      <path>
+    	  <fileset dir="webapp/WEB-INF/lib">
+           <include name="**/*.jar"/>
+      	</fileset>
+      </path>
+    </copy>
+    <copy todir="output/ant/webapp">
+      <fileset dir="webapp"/>
+    </copy>
+  	<copy tofile="output/ant/webapp/WEB-INF/environment.properties" file="conf/environment/localhost.environment.properties"/>
+
+    <war destfile="output/ant/${ant.project.name}.war">
+      <classes dir="${classes.dir}"/>
+      <lib dir="output/ant/webinflib"/>
+      <fileset dir="output/ant/webapp"/>
+    </war>
+  </target>
+
+  <target name="war-aws" depends="compile" description="makes war file">
+    <mkdir dir="output/ant/webinflib"/>
+    <copy flatten="true" todir="output/ant/webinflib">
+      <path>
+        <fileset dir="webapp/WEB-INF/lib">
+           <include name="**/*.jar"/>
+        </fileset>
+      </path>
+    </copy>
+    <copy todir="output/ant/webapp">
+      <fileset dir="webapp"/>
+    </copy>
+    <copy tofile="output/ant/webapp/WEB-INF/environment.properties" file="conf/environment/aws.environment.properties"/>
+
+    <war destfile="output/ant/${ant.project.name}.war">
+      <classes dir="${classes.dir}"/>
+      <lib dir="output/ant/webinflib"/>
+      <fileset dir="output/ant/webapp"/>
+    </war>
+  </target>
+	
+	
+</project>
