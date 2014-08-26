@@ -18,7 +18,23 @@
 	 	  <delete dir="output"/>
 	  </target>
 	
-  <target name="compile" description="Compiles .java files in src/ using jars from lib/ and dependencies.">
+	 <target name="sass">
+	    <condition property="sass.path" value="/usr/bin/sass">
+	       <os family="mac"/>
+	    </condition>
+	    <condition property="sass.path" value="/usr/local/bin/sass">
+	           <os family="unix"/>
+	    </condition>
+	    
+	    <echo message="SASS path is: ${sass.path}"/>
+	    
+	    <exec executable="${sass.path}" failonerror="true">
+	      <arg line="webapp/css/sass/base.sass webapp/css/base.css"/>
+	    </exec>
+	  </target>
+	
+	
+  <target name="compile" depends="sass" description="Compiles .java files in src/ using jars from lib/ and dependencies.">
     <echo message="COMPILING ${ant.project.name}"/>
     <mkdir dir="${classes.dir}"/>
     <javac destdir="${classes.dir}"

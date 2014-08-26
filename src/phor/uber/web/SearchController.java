@@ -2,6 +2,8 @@ package phor.uber.web;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,14 +14,22 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.gardella.util.IOUtils;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
-
+/**
+ * Controller for all RESTful search queries done by the Front End.
+ * 
+ * @author Ben
+ *
+ */
 @Controller
 public class SearchController {
 
@@ -27,31 +37,15 @@ public class SearchController {
     
     private HttpClient httpClient = new HttpClient();
     private static final String AC_QUERY = "http://localhost:9200/locations/_suggest";
+    private static final String SEARCH_QUERY = "http://localhost:9200/locations/_search";
+    
+    private static final String[] STEM_FIELDS = {"actor_1", "actor_2", "actor_3", "title", "locations", "production_company", "distributor", "writer"};
+    
     
     @RequestMapping(value="/autocomplete/{stem}", method=RequestMethod.GET)
-    public void autocomplete( @PathVariable String stem, HttpServletResponse resp ){
+    public String autocomplete( @PathVariable String stem, HttpServletResponse resp, Model model ){
         
-        PostMethod method = new PostMethod(AC_QUERY);
-        
-        String json = createJsonBody(stem);
-        
-        try {
-            StringRequestEntity requestEntity = new StringRequestEntity(json,"application/json","UTF-8");
-            method.setRequestEntity(requestEntity);                                                
-            int statusCode = httpClient.executeMethod(method);
-            if(statusCode == HttpStatus.SC_OK){
-                
-                String responseString = IOUtils.readFully(new InputStreamReader(method.getResponseBodyAsStream(), "utf-8"));
-                JSONParser parser = new JSONParser();
-                JSONObject data = (JSONObject) parser.parse(responseString);
-                
-                returnJsonSuccess(data, resp);
-            }
-        } catch (Exception e) {
-           returnJsonFail(e, resp);
-        }
-        
-/*
+        /*
         {
             "loc_suggest":{
                 "text":"to",
@@ -60,10 +54,8 @@ public class SearchController {
                 }
             }
         }
-*/        
-    }
-    
-    private String createJsonBody(String stem){
+        */
+        
         JSONObject jobj1 = new JSONObject();
         jobj1.put("text", stem);
         
@@ -75,26 +67,111 @@ public class SearchController {
         JSONObject jobj = new JSONObject();
         jobj.put("suggest", jobj1);
         
-        return jobj.toJSONString();
+        return sendElasticSearch(AC_QUERY, jobj.toJSONString(), model);
+    }
+    
+    @RequestMapping(value="/exactSearch", method=RequestMethod.POST)
+    public String explicitSearch( @RequestParam("search") String searchString, Model model ){
+                        
+        /*
+         {
+            "query" : {
+                "query_string" : {
+                    "query": "Valencia St. from 16th to 17th",
+                    "default_operator" : "AND"
+                }
+            }
+        } 
+         */
+        
+        JSONObject jobj2 = new JSONObject();
+        jobj2.put("query", searchString);
+        jobj2.put("default_operator", "AND");
+        
+        JSONObject jobj1 = new JSONObject();
+        jobj1.put("query_string", jobj2);
+        
+        JSONObject jobj = new JSONObject();
+        jobj.put("query", jobj1);
+        
+        
+        return sendElasticSearch(SEARCH_QUERY, jobj.toJSONString(), model);
     }
     
     
-    protected void returnJsonSuccess(JSONObject data,  HttpServletResponse response){
+    @RequestMapping(value="/looseSearch", method=RequestMethod.POST)
+    public String looseSearch( @RequestParam("search") String searchString, Model model ){
+                        
+        /*
+         {
+            "query" : {
+                "query_string" : {
+                    "fields" : ["actor_1", "actor_2", "actor_3", "title", "locations", "production_company", "distributor", "writer"],
+                    "query": "Valencia St. from 16th to 17th",
+                }
+            }
+        } 
+         */
+        JSONArray fieldArr = new JSONArray();
+        fieldArr.addAll(Arrays.asList(STEM_FIELDS));
+        
+        JSONObject jobj2 = new JSONObject();
+        jobj2.put("query", searchString);
+        jobj2.put("fields", fieldArr);
+        
+        JSONObject jobj1 = new JSONObject();
+        jobj1.put("query_string", jobj2);
+        
+        JSONObject jobj = new JSONObject();
+        jobj.put("query", jobj1);
+        
+        
+        return sendElasticSearch(SEARCH_QUERY, jobj.toJSONString(), model);
+    }
+    
+    
+    
+    
+    /////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////
+    
+    private String sendElasticSearch(String url, String json, Model model){
+     
+        PostMethod method = new PostMethod(url);
+        
+        try {
+            StringRequestEntity requestEntity = new StringRequestEntity(json,"application/json","UTF-8");
+            method.setRequestEntity(requestEntity);                                                
+            int statusCode = httpClient.executeMethod(method);
+            if(statusCode == HttpStatus.SC_OK){
+                
+                String responseString = IOUtils.readFully(new InputStreamReader(method.getResponseBodyAsStream(), "utf-8"));
+                JSONParser parser = new JSONParser();
+                JSONObject data = (JSONObject) parser.parse(responseString);
+                
+                returnJsonSuccess(data, model);
+            }
+        } catch (Exception e) {
+           returnJsonFail(e, model);
+        } finally{
+            method.releaseConnection();
+        }
+        
+        return "";
+    }
+    
+    
+    private void returnJsonSuccess(JSONObject data,  Model model){
         JSONObject wrapper = new JSONObject();
         wrapper.put("result", "SUCCESS");
         wrapper.put("data", data);
         
-        response.setContentType("application/json");
-        response.setHeader("Cache-Control", "no-cache");
-        try {
-            response.getWriter().write(wrapper.toJSONString());
-        } catch (IOException e) {
-            logger.error("cannot write json response", e);
-        }
+        model.addAttribute("data", data);
     }
     
     
-    protected void returnJsonFail(Exception ex,  HttpServletResponse response){
+    private void returnJsonFail(Exception ex,  Model model){
         JSONObject wrapper = new JSONObject();
         wrapper.put("result", "FAIL");
         
@@ -103,14 +180,6 @@ public class SearchController {
         data.put("message", ex.getMessage());
         //e.getStackTrace();
         
-        wrapper.put("data", data);
-        
-        response.setContentType("application/json");
-        response.setHeader("Cache-Control", "no-cache");
-        try {
-            response.getWriter().write(wrapper.toJSONString());
-        } catch (IOException e) {
-            logger.error("cannot write json response", e);
-        }
+        model.addAttribute("data", data);
     }
 }

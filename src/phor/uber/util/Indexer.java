@@ -36,8 +36,7 @@ public class Indexer {
     private static String GOOGLE_GEOCODE_URL = "http://maps.google.com/maps/api/geocode/json?sensor=false&address=";
     private static String GEOCODE_SUFFIX = "+San+Francisco+CA";
     
-    public static void main(String[] args) {
-    
+    public static void main(String[] args) {    
         Indexer indexer = new Indexer();
         indexer.beginIndex();
     }
@@ -48,15 +47,10 @@ public class Indexer {
         
         httpClient.executeMethod(method);            
         
-        String charset = method.getResponseCharSet();
-        long leng = method.getResponseContentLength();
+        //String charset = method.getResponseCharSet();
+        //long leng = method.getResponseContentLength();
         byte[] bodyArr = method.getResponseBody();
-        
-        //logger.info("charset : " + charset);
-        //logger.info("leng : " + leng);
-        //logger.info("bodyArr leng : " + bodyArr.length);
-        
-        
+                
         //String responseString = IOUtils.readFully(new InputStreamReader(method.getResponseBodyAsStream(), "UTF-8"));
         method.releaseConnection();
         
@@ -64,44 +58,14 @@ public class Indexer {
         //String body = method.getResponseBodyAsString();
         
         return new String(bodyArr);
-        
-/*       
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-        CloseableHttpResponse httpResp = null;
-        try {
-           
-            RequestConfig requestConfig = RequestConfig.custom()
-                    .setSocketTimeout(1000)
-                    .setConnectTimeout(1000)
-                    .
-                    .build();
-
-            HttpGet theGet = new HttpGet(DATA_URL);
-            theGet.setConfig(requestConfig);
-            
-            httpResp = httpclient.execute(theGet);
-            HttpEntity entity = httpResp.getEntity();
-            
-            String responseString = IOUtils.readFully(new InputStreamReader(entity.getContent(), "UTF-8"));
-            
-            logger.info(responseString);
-            return responseString;  
-            
-        } finally {
-            httpclient.close();
-            if(httpResp != null){
-                httpResp.close();
-            }
-        }
-*/        
     }
     
     private void beginIndex(){
         JSONParser parser = new JSONParser();
         JSONArray jarr = new JSONArray();
         
-        String test = "Rainforest Café (145 Jefferson Street)";
-        logger.info("TEST : " + test);
+        //String test = "Rainforest Café (145 Jefferson Street)";
+        //logger.info("TEST : " + test);
         
         try{
             String responseString = getData();
