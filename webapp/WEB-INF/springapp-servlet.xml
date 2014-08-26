@@ -18,7 +18,7 @@
                 http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
        
       <context:annotation-config />
-      <context:component-scan base-package="org.gardella.web" />
+      <context:component-scan base-package="phor.uber.web" />
       <context:property-placeholder location="/WEB-INF/environment.properties" />
 		
 	    <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">

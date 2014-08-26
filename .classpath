@@ -10,7 +10,7 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/com.springsource.org.codehaus.jackson-1.0.0.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/com.springsource.org.codehaus.jackson.mapper-1.0.0.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-codec-1.6.jar"/>
-	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-httpclient-3.1.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/commons-httpclient-3.1.jar" sourcepath="/Users/Ben/.m2/repository/commons-httpclient/commons-httpclient/3.1/commons-httpclient-3.1-sources.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/google-voice-java-1.14-java6.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/guava-r08.jar"/>
@@ -50,5 +50,6 @@
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/opennlp-maxent-3.0.3.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/opennlp-tools-1.5.3.jar"/>
 	<classpathentry kind="lib" path="webapp/WEB-INF/lib/opennlp-uima-1.5.3.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/json_simple-1.1.jar" sourcepath="/Users/Ben/.m2/repository/com/googlecode/json-simple/json-simple/1.1/json-simple-1.1-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

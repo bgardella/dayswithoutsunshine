@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="gardella" basedir=".">
+<project name="sunshine" basedir=".">
 
 	<property name="classes.dir" value="webapp/WEB-INF/classes"/>
 	<property name="name" value="dayswithoutsunshine"/>
@@ -74,6 +74,40 @@
       <fileset dir="output/ant/webapp"/>
     </war>
   </target>
+	
+	<target name="jar" depends="compile" description="Make a jar">
+	      
+	    <mkdir dir="output/classes"/>
+	    <unzip dest="output/classes">
+	      <fileset dir="webapp/WEB-INF/lib">
+	        <include name="**/*.jar"/>
+	      	<exclude name="**/mail.jar"/>
+	      </fileset>
+	    </unzip>
+	    
+		  <copy todir="output/classes">
+		  	<fileset dir="webapp/WEB-INF/classes">
+		  	  <include name="**/*.class"/>
+		  	</fileset>
+		  </copy>
+		
+	    <mkdir dir="output/classes/WEB-INF"/>  
+	    <copy todir="output/classes" file="webapp/WEB-INF/log4j.properties"/>
+	    <copy todir="output/classes" file="webapp/WEB-INF/springapp-servlet.xml"/>
+	    
+	    <copy todir="output/classes/META-INF" file="conf/spring.handlers"/>
+	    <copy todir="output/classes/META-INF" file="conf/spring.schemas"/>
+	    <copy todir="output/classes/META-INF" file="conf/spring.tooling"/>
+	    
+	    <jar destfile="./sunshine.jar">
+	       <fileset dir="output/classes"/>
+	       <manifest>
+	         <attribute name="Main-Class" value="phor.uber.util.Indexer"/>
+	         <attribute name="Build-By" value="ben-ben"/>
+	       </manifest>  
+	    </jar>
+	  
+	  </target>
 	
 	
 </project>
