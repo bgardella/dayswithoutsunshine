@@ -17,12 +17,16 @@ public class IOUtils {
         BufferedReader bufferedReader = input instanceof BufferedReader
                 ? (BufferedReader) input
                 : new BufferedReader(input);
+                
         StringBuffer result = new StringBuffer();
         char[] buffer = new char[4 * 1024];
         int charsRead;
         while ((charsRead = bufferedReader.read(buffer)) != -1) {
             result.append(buffer, 0, charsRead);
         }
+        
+        bufferedReader.close();
+        
         return result.toString();
     }
 }

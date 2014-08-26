@@ -3,6 +3,8 @@ package phor.uber.util;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -10,6 +12,8 @@ import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.gardella.util.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -23,39 +27,87 @@ import org.json.simple.parser.ParseException;
  */
 public class Indexer {
 
+    protected final Log logger = LogFactory.getLog(getClass());
+    
     private static final String DATA_URL="http://data.sfgov.org/resource/yitu-d5am.json";
-    
     private static final String ES_URL="http://localhost:9200/locations/sf/";
-    
     private static final String[] STEM_FIELDS = {"actor_1", "actor_2", "actor_3", "title", "locations", "production_company", "distributor", "writer"};
+    
+    private static String GOOGLE_GEOCODE_URL = "http://maps.google.com/maps/api/geocode/json?sensor=false&address=";
+    private static String GEOCODE_SUFFIX = "+San+Francisco+CA";
     
     public static void main(String[] args) {
     
-        JSONParser parser = new JSONParser();
+        Indexer indexer = new Indexer();
+        indexer.beginIndex();
+    }
+
+    private String getData() throws HttpException, IOException{
         HttpClient httpClient = new HttpClient();
         GetMethod method = new GetMethod(DATA_URL);
         
+        httpClient.executeMethod(method);            
+        
+        String charset = method.getResponseCharSet();
+        long leng = method.getResponseContentLength();
+        byte[] bodyArr = method.getResponseBody();
+        
+        //logger.info("charset : " + charset);
+        //logger.info("leng : " + leng);
+        //logger.info("bodyArr leng : " + bodyArr.length);
+        
+        
+        //String responseString = IOUtils.readFully(new InputStreamReader(method.getResponseBodyAsStream(), "UTF-8"));
+        method.releaseConnection();
+        
+        //BufferedReader theReader = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream(), "UTF-8"));
+        //String body = method.getResponseBodyAsString();
+        
+        return new String(bodyArr);
+        
+/*       
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        CloseableHttpResponse httpResp = null;
+        try {
+           
+            RequestConfig requestConfig = RequestConfig.custom()
+                    .setSocketTimeout(1000)
+                    .setConnectTimeout(1000)
+                    .
+                    .build();
+
+            HttpGet theGet = new HttpGet(DATA_URL);
+            theGet.setConfig(requestConfig);
+            
+            httpResp = httpclient.execute(theGet);
+            HttpEntity entity = httpResp.getEntity();
+            
+            String responseString = IOUtils.readFully(new InputStreamReader(entity.getContent(), "UTF-8"));
+            
+            logger.info(responseString);
+            return responseString;  
+            
+        } finally {
+            httpclient.close();
+            if(httpResp != null){
+                httpResp.close();
+            }
+        }
+*/        
+    }
+    
+    private void beginIndex(){
+        JSONParser parser = new JSONParser();
         JSONArray jarr = new JSONArray();
         
+        String test = "Rainforest Café (145 Jefferson Street)";
+        logger.info("TEST : " + test);
+        
         try{
-            httpClient.executeMethod(method);            
-            String responseString = IOUtils.readFully(new InputStreamReader(method.getResponseBodyAsStream(), "utf-8"));
-            
+            String responseString = getData();
             jarr = (JSONArray) parser.parse(responseString);
             
-        } catch (HttpException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        int counter=0;
-        try {
-            
-            
+            int counter=0;
             for(Object o : jarr){
                 JSONObject entry = (JSONObject)o;
 
@@ -70,41 +122,116 @@ public class Indexer {
                 }
                 
                 jobj.put("input", jsArr);
-                entry.put("auto_complete", jobj);                 
-            
+                entry.put("auto_complete", jobj);  
                 
-                
-                //push to index
-                PutMethod putMethod = new PutMethod(ES_URL+counter);
-                StringRequestEntity body = new StringRequestEntity(entry.toJSONString(), "application/json","UTF-8");
-                putMethod.setRequestEntity(body);
-                int respCode = httpClient.executeMethod(putMethod);
-                
-                System.out.println("[" + respCode + "] : " + entry.toJSONString());
-                
-                counter++;
+                String location = ((String)entry.get("locations"));
+                logger.info(location);
+                if(location != null){
+                    location = location.replaceAll(" ", "+");
+                    
+                    HttpClient httpClient = new HttpClient();
+                    
+                    //extract lat/long from google
+                    JSONObject googleLatLong = exchangeAddressForCoordinatesByGoogle(httpClient, location, 0);
+                    logger.info(location + " : " + googleLatLong.toJSONString());          
+                    entry.put("lat", googleLatLong.get("lat"));
+                    entry.put("lng", googleLatLong.get("lng"));                    
+                    
+                    //push to index
+                    PutMethod putMethod = new PutMethod(ES_URL+counter);
+                    StringRequestEntity body = new StringRequestEntity(entry.toJSONString(), "application/json","UTF-8");
+                    putMethod.setRequestEntity(body);
+                    int respCode = httpClient.executeMethod(putMethod);
+                    putMethod.releaseConnection();
+                    
+                    logger.info("[" + respCode + "] : " + entry.toJSONString());
+                    
+                    counter++;
+                }
             }         
             
-            
-            
-        } catch (URIException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (HttpException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        
-
-        
     }
     
     
+    
+    private JSONObject exchangeAddressForCoordinatesByGoogle(HttpClient httpClient, String addressFragment, int count) throws RateLimitException, URISyntaxException{
+                
+        String url = GOOGLE_GEOCODE_URL + addressFragment + GEOCODE_SUFFIX;
+        URI uri = new URI(url);
+
+        String asciiUrl = uri.toASCIIString();
+        logger.info(asciiUrl);
+        GetMethod method = new GetMethod(asciiUrl);
+        
+        JSONObject jobj = new JSONObject();
+        
+        try{
+            int respCode = httpClient.executeMethod(method);
+            logger.info("RESP CODE: " + respCode);            
+            
+            String responseString = IOUtils.readFully(new InputStreamReader(method.getResponseBodyAsStream(), "utf-8"));
+            //logger.info("RESPONSE: [" + responseString + "]");
+            
+            method.releaseConnection();
+            
+            JSONParser parser = new JSONParser();
+            
+            /******* GOOGLE RESONSE *****/
+            jobj = (JSONObject) parser.parse(responseString);
+            String status = (String)jobj.get("status");
+            if(status.equals("OVER_QUERY_LIMIT")){
+                logger.error("RATE LIMIT REACHED. SLEEPING FOR ONE SECOND: [" + addressFragment + "][" + count + "]");
+                Thread.sleep(1000);  // sleep for 1 second
+                count++;
+                if(count > 3){
+                    throw new RateLimitException();
+                }
+                return exchangeAddressForCoordinatesByGoogle(httpClient, addressFragment, count);
+            }else{
+                JSONArray jarr = (JSONArray)jobj.get("results");
+                if(jarr != null && !jarr.isEmpty()){
+                    JSONObject jresult = (JSONObject)jarr.get(0);
+                    //System.out.println(jresult.toJSONString());
+                    JSONObject jLatLong = (JSONObject)((JSONObject)jresult.get("geometry")).get("location");
+                    logger.info("LAT: " + jLatLong.get("lat") + " LONG: " + jLatLong.get("lng"));
+                    
+                    return jLatLong;
+                }else{
+                    logger.info("NO LOCATION FOR ADDRESS: [" + addressFragment + "]");
+                    logger.info(jobj.toJSONString());
+                    logger.info("*********************");
+                }
+            }
+            return jobj;
+
+            
+        } catch (URIException e) {
+            logger.error(e);
+            return jobj;
+        } catch (HttpException e) {
+            logger.error(e);
+            return jobj;
+        }catch (UnsupportedEncodingException e) {
+            logger.error(e);
+            return jobj;
+        }catch (IOException e){
+            logger.error(e);
+            return jobj;
+        } catch (ParseException e) {
+            logger.error(e);
+            return jobj;
+        } catch (IndexOutOfBoundsException e){
+            logger.info(url);
+            logger.error(e);
+            return jobj;
+        } catch (InterruptedException e) {
+            logger.error(e);
+            return jobj;
+        }
+    }
     
     
 }
