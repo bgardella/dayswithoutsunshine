@@ -17,7 +17,7 @@ function initialize() {
 }
 
 
-function setNewPin(lat, lng, id){
+function setNewPin(lat, lng, id, title){
 	
 	var thePin = new google.maps.MarkerImage('image/pin.png',
 			        new google.maps.Size(15, 22),
@@ -42,6 +42,14 @@ function setNewPin(lat, lng, id){
 	});
 	
 	gmarkers.push(mark);
+	
+	var myTitle = "<div>"+ title + "</div>";
+	
+	var infowindow = new google.maps.InfoWindow({
+		content: myTitle,
+		disableAutoPan : true
+		});
+	infowindow.open(theMap, mark);
 }  
 
 function byidResponse(response){
@@ -57,6 +65,8 @@ function clearAllPins(){
 	$(".movie-details").hide();
 	$(".drop-down").empty();
 	$(".drop-down").hide();
+	theMap.setZoom(12);
+	theMap.draggable = false;
 	
 	for(var i=(gmarkers.length)-1;i>=0;i--){
 		gmarkers[i].setMap(null);
@@ -107,7 +117,7 @@ function setAllPins(hits){
 	var lats=[], lngs=[], x=0;
 	
 	for(var i=0;i<hits.length;i++){
-		setNewPin(hits[i]._source.lat, hits[i]._source.lng, hits[i]._id);
+		setNewPin(hits[i]._source.lat, hits[i]._source.lng, hits[i]._id, hits[i]._source.title);
 		lats.push(hits[i]._source.lat);
 		lngs.push(hits[i]._source.lng);
 	}
@@ -130,7 +140,8 @@ function setAllPins(hits){
 	var lngAvg = (lngTot/lngs.length).toFixed(7);
 	
 	theMap.setCenter(new google.maps.LatLng(latAvg,lngAvg));
-	//theMap.setZoom(10); 
+	theMap.setZoom(13);
+	theMap.draggable = true;
 }
 
 function acResponse(response){
