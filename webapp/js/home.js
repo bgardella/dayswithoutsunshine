@@ -84,7 +84,7 @@ function acRequest(val){
 
 function exactSearch(val){
 	
-	$.post( urlBase+"/exactSearch.json", { search: val })
+	$.post( urlBase+"/exactSearch.json", { search: val.replace(/:/g, "") })
 	  .done(function( response ) {
 	    //alert( "search results: " + response.data.hits.hits[0]._source.title );
 		  
