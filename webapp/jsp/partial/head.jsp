@@ -12,11 +12,11 @@
     <script type='text/javascript' src="<%=request.getContextPath()%>/js/jquery-ui-1.10.4.custom.js"></script>
     
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=${googleApiKey}"></script>
-    <script type='text/javascript' src="<%=request.getContextPath()%>/js/home.js"></script>
+    <script type='text/javascript' src="<%=request.getContextPath()%>/js/jsonp.js"></script>
     
     <script type='text/javascript'>
        var context = "<%=request.getContextPath()%>";
        var urlBase = "${urlBase}";
     </script>
-
+    <script type='text/javascript' src="<%=request.getContextPath()%>/js/home.js"></script>
 </head>

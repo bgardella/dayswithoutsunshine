@@ -20,21 +20,9 @@
     <context:property-placeholder location="/WEB-INF/environment.properties" />    
 
     <security:http auto-config="false" entry-point-ref="customAuthEntryPoint">
-        <!-- got to let folks hit the custom login page without being logged in.  heh. -->
-        <security:intercept-url pattern="/index.jsp" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/js/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/css/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/docs/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/image/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/signup/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/auth-fail" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/login" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/authenticate" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/validate/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-                
-        <!-- make everything else public for now -->
+       
+        <!-- make everything  public for now -->
         <security:intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-
       
       <!-- custom filter for correct rememberme behavoir -->
       <security:custom-filter ref="rememberMeFilter" position="REMEMBER_ME_FILTER"/>

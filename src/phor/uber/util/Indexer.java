@@ -31,10 +31,16 @@ public class Indexer {
     
     private static final String DATA_URL="http://data.sfgov.org/resource/yitu-d5am.json";
     private static final String ES_URL="http://localhost:9200/locations/sf/";
-    private static final String[] STEM_FIELDS = {"actor_1", "actor_2", "actor_3", "title", "locations", "production_company", "distributor", "writer"};
+    private static final String[] STEM_FIELDS = {"actor_1", "actor_2", "actor_3", "title", "locations", "production_company", "distributor", "writer", "director"};
     
     private static String GOOGLE_GEOCODE_URL = "http://maps.google.com/maps/api/geocode/json?sensor=false&address=";
     private static String GEOCODE_SUFFIX = "+San+Francisco+CA";
+    
+    private static final double MIN_SF_LNG = -124.0;
+    private static final double MAX_SF_LNG = -122.0;
+    private static final double MIN_SF_LAT = 37.0;
+    private static final double MAX_SF_LAT = 38.0;
+    
     
     public static void main(String[] args) {    
         Indexer indexer = new Indexer();
@@ -97,20 +103,24 @@ public class Indexer {
                     
                     //extract lat/long from google
                     JSONObject googleLatLong = exchangeAddressForCoordinatesByGoogle(httpClient, location, 0);
-                    logger.info(location + " : " + googleLatLong.toJSONString());          
-                    entry.put("lat", googleLatLong.get("lat"));
-                    entry.put("lng", googleLatLong.get("lng"));                    
+                    logger.info(location + " : " + googleLatLong.toJSONString());
                     
-                    //push to index
-                    PutMethod putMethod = new PutMethod(ES_URL+counter);
-                    StringRequestEntity body = new StringRequestEntity(entry.toJSONString(), "application/json","UTF-8");
-                    putMethod.setRequestEntity(body);
-                    int respCode = httpClient.executeMethod(putMethod);
-                    putMethod.releaseConnection();
-                    
-                    logger.info("[" + respCode + "] : " + entry.toJSONString());
-                    
-                    counter++;
+                    //only push to index if coords present
+                    if(googleLatLong.containsKey("lat") && googleLatLong.containsKey("lng")){
+                        entry.put("lat", googleLatLong.get("lat"));
+                        entry.put("lng", googleLatLong.get("lng"));
+                        
+                        //push to index
+                        PutMethod putMethod = new PutMethod(ES_URL+counter);
+                        StringRequestEntity body = new StringRequestEntity(entry.toJSONString(), "application/json","UTF-8");
+                        putMethod.setRequestEntity(body);
+                        int respCode = httpClient.executeMethod(putMethod);
+                        putMethod.releaseConnection();
+                        
+                        logger.info("[" + respCode + "] : " + entry.toJSONString());
+                        
+                        counter++;
+                    }
                 }
             }         
             
@@ -162,7 +172,12 @@ public class Indexer {
                     JSONObject jLatLong = (JSONObject)((JSONObject)jresult.get("geometry")).get("location");
                     logger.info("LAT: " + jLatLong.get("lat") + " LONG: " + jLatLong.get("lng"));
                     
-                    return jLatLong;
+                    if(validCoords((Double)jLatLong.get("lat"), (Double)jLatLong.get("lng"))){
+                        logger.info("VALID LAT/LONG");
+                        return jLatLong;
+                    }else{
+                        logger.info("INVALID LAT/LONG");
+                    }
                 }else{
                     logger.info("NO LOCATION FOR ADDRESS: [" + addressFragment + "]");
                     logger.info(jobj.toJSONString());
@@ -197,5 +212,18 @@ public class Indexer {
         }
     }
     
+    
+    private boolean validCoords(Double lat, Double lng){
+        //double dLat = Double.parseDouble(lat);
+        //double dLng = Double.parseDouble(lng);
+        
+        if( lat >= MIN_SF_LAT && lat <= MAX_SF_LAT &&
+            lng >= MIN_SF_LNG && lng <= MAX_SF_LNG ){
+            return true;
+        }
+        return false;
+        
+        
+    }
     
 }

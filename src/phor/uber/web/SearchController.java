@@ -2,9 +2,9 @@ package phor.uber.web;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -19,6 +19,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,19 +32,23 @@ import org.springframework.web.bind.annotation.RequestParam;
  *
  */
 @Controller
-public class SearchController {
+public class SearchController extends AbstractController{
 
     protected final Log logger = LogFactory.getLog(getClass());
     
-    private HttpClient httpClient = new HttpClient();
     private static final String AC_QUERY = "http://localhost:9200/locations/_suggest";
     private static final String SEARCH_QUERY = "http://localhost:9200/locations/_search";
     
-    private static final String[] STEM_FIELDS = {"actor_1", "actor_2", "actor_3", "title", "locations", "production_company", "distributor", "writer"};
+    private static final String[] STEM_FIELDS = {"actor_1", "actor_2", "actor_3", "title", "locations", "production_company", "distributor", "writer", "director"};
     
+    @RequestMapping(value={"/","/index.html","/index.htm"}, method=RequestMethod.GET)
+    public String home( HttpServletRequest req, Model model ){
+        setFrontEndVariables(model, req);
+        return "home";
+    }
     
     @RequestMapping(value="/autocomplete/{stem}", method=RequestMethod.GET)
-    public String autocomplete( @PathVariable String stem, HttpServletResponse resp, Model model ){
+    public String autocomplete( @PathVariable String stem, HttpServletRequest req, Model model ){
         
         /*
         {
@@ -71,7 +76,7 @@ public class SearchController {
     }
     
     @RequestMapping(value="/exactSearch", method=RequestMethod.POST)
-    public String explicitSearch( @RequestParam("search") String searchString, Model model ){
+    public void explicitSearch( @RequestParam("search") String searchString, HttpServletResponse resp){
                         
         /*
          {
@@ -95,12 +100,12 @@ public class SearchController {
         jobj.put("query", jobj1);
         
         
-        return sendElasticSearch(SEARCH_QUERY, jobj.toJSONString(), model);
+        sendElasticSearch(SEARCH_QUERY, jobj.toJSONString(), resp);
     }
     
     
     @RequestMapping(value="/looseSearch", method=RequestMethod.POST)
-    public String looseSearch( @RequestParam("search") String searchString, Model model ){
+    public void looseSearch( @RequestParam("search") String searchString, HttpServletResponse resp ){
                         
         /*
          {
@@ -126,7 +131,7 @@ public class SearchController {
         jobj.put("query", jobj1);
         
         
-        return sendElasticSearch(SEARCH_QUERY, jobj.toJSONString(), model);
+        sendElasticSearch(SEARCH_QUERY, jobj.toJSONString(), resp);
     }
     
     
@@ -136,50 +141,5 @@ public class SearchController {
     /////////////////////////////////////////////////////
     /////////////////////////////////////////////////////
     
-    private String sendElasticSearch(String url, String json, Model model){
-     
-        PostMethod method = new PostMethod(url);
-        
-        try {
-            StringRequestEntity requestEntity = new StringRequestEntity(json,"application/json","UTF-8");
-            method.setRequestEntity(requestEntity);                                                
-            int statusCode = httpClient.executeMethod(method);
-            if(statusCode == HttpStatus.SC_OK){
-                
-                String responseString = IOUtils.readFully(new InputStreamReader(method.getResponseBodyAsStream(), "utf-8"));
-                JSONParser parser = new JSONParser();
-                JSONObject data = (JSONObject) parser.parse(responseString);
-                
-                returnJsonSuccess(data, model);
-            }
-        } catch (Exception e) {
-           returnJsonFail(e, model);
-        } finally{
-            method.releaseConnection();
-        }
-        
-        return "";
-    }
-    
-    
-    private void returnJsonSuccess(JSONObject data,  Model model){
-        JSONObject wrapper = new JSONObject();
-        wrapper.put("result", "SUCCESS");
-        wrapper.put("data", data);
-        
-        model.addAttribute("data", data);
-    }
-    
-    
-    private void returnJsonFail(Exception ex,  Model model){
-        JSONObject wrapper = new JSONObject();
-        wrapper.put("result", "FAIL");
-        
-        JSONObject data = new JSONObject();
-        data.put("excepton", ex.getClass().toString());
-        data.put("message", ex.getMessage());
-        //e.getStackTrace();
-        
-        model.addAttribute("data", data);
-    }
+
 }

@@ -12,6 +12,7 @@
 <div class="home-container">
 
   <input id="main-search" class="search-bar"></input>
+  <div class="drop-down"></div>
 
   <div id="map-canvas" class="home-map"></div>  
 </div>

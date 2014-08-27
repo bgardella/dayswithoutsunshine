@@ -7,7 +7,7 @@ callAPI = function(uri,callback){
 	var url = uri + '.json?callback='+callback;
 
     script.type = 'text/javascript';
-    script.id = 'stash-items-script';
+    script.id = 'api-calls-script';
     script.src = url;
     document.body.appendChild(script);
 }
