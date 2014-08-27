@@ -3,7 +3,7 @@ The Uber Challenge -- SF Movies
 This is a Full Stack implementation of the web coding challenge 
 found: [here](https://github.com/uber/coding-challenge-tools)
 
-The finished application can be found here: [http://wifflemovie.com](wifflemovie.com)
+The finished application can be found here: [http://wifflemovie.com](http://wifflemovie.com)
 
 Technologies Used
 -----------------
