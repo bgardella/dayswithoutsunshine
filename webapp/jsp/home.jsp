@@ -11,7 +11,7 @@
   
 <div class="home-container">
 
-  <span class="app-title">SF Location Scout</span>
+  <button class="random-btn">Random</button><span class="app-title">SF Location Scout</span>
   <input id="main-search" class="search-bar"></input>
   <div class="drop-down"></div>
 

@@ -31,7 +31,7 @@ public class SearchController extends AbstractController{
     private static final String SEARCH_QUERY = "http://localhost:9200/locations/_search";
     private static final String BYID_QUERY = "http://localhost:9200/locations/sf/";
     
-    private static final String[] STEM_FIELDS = {"actor_1", "actor_2", "actor_3", "title", "locations", "production_company", "distributor", "writer", "director"};
+    private static final String[] STEM_FIELDS = {"actor_1", "actor_2", "actor_3", "title", "locations", "production_company", "distributor", "writer", "director", "release_year"};
     
     @RequestMapping(value={"/","/index.html","/index.htm"}, method=RequestMethod.GET)
     public String home( HttpServletRequest req, Model model ){
@@ -44,6 +44,31 @@ public class SearchController extends AbstractController{
     public String byId( @PathVariable long id, Model model ){
         
         return sendElasticSearch(BYID_QUERY+id, model);
+    }
+    
+    @RequestMapping(value="/selectAll", method=RequestMethod.GET)
+    public String selectAll(Model model){
+        
+        /*
+            "fields" : ["lat", "lng", "title"],
+            "query" : {
+                "match_all": {}
+            }
+         */
+        
+        JSONArray jarr = new JSONArray();
+        jarr.add("lat");
+        jarr.add("lng");
+        jarr.add("title");
+        
+        JSONObject jobj2 = new JSONObject();
+        jobj2.put("match_all", new JSONObject());
+        
+        JSONObject jobj = new JSONObject();
+        jobj.put("fields", jarr);
+        jobj.put("query", jobj2);
+        
+        return sendElasticSearch(SEARCH_QUERY+"?size=900", jobj.toJSONString(), model);
     }
     
     @RequestMapping(value="/autocomplete/{stem}", method=RequestMethod.GET)
@@ -134,7 +159,37 @@ public class SearchController extends AbstractController{
     }
     
     
-    
+    @RequestMapping(value="/byField/{fieldName}/{searchString}", method=RequestMethod.GET)
+    public String searchByField( @PathVariable String fieldName, @PathVariable String searchString, Model model ){
+                        
+        /*
+         {
+            "query" : {
+                "query_string" : {
+                    "fields" : ["fieldName"],
+                    "query": "Valencia St. from 16th to 17th",
+                    "default_operator" : "AND"
+                }
+            }
+        } 
+         */
+        JSONArray fieldArr = new JSONArray();
+        fieldArr.add(fieldName);
+        
+        JSONObject jobj2 = new JSONObject();
+        jobj2.put("query", searchString);
+        jobj2.put("fields", fieldArr);
+        jobj2.put("default_operator", "AND");
+        
+        JSONObject jobj1 = new JSONObject();
+        jobj1.put("query_string", jobj2);
+        
+        JSONObject jobj = new JSONObject();
+        jobj.put("query", jobj1);
+        
+        
+        return sendElasticSearch(SEARCH_QUERY, jobj.toJSONString(), model);
+    }
     
     /////////////////////////////////////////////////////
     /////////////////////////////////////////////////////

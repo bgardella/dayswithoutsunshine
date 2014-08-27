@@ -50,6 +50,9 @@ Deployment
 What Is Missing?
 ----------------
 * N-Gram support for better autocomplete
+* Scheduled Job Process to periodically re-run the indexer to pull new data from the 
+SF-GOV website
+* Mobile/Tablet presentation logic 
 
 What's Left To Do?
 ------------------
