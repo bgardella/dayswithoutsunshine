@@ -1,25 +1,16 @@
 package phor.uber.web;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.gardella.util.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,6 +29,7 @@ public class SearchController extends AbstractController{
     
     private static final String AC_QUERY = "http://localhost:9200/locations/_suggest";
     private static final String SEARCH_QUERY = "http://localhost:9200/locations/_search";
+    private static final String BYID_QUERY = "http://localhost:9200/locations/sf/";
     
     private static final String[] STEM_FIELDS = {"actor_1", "actor_2", "actor_3", "title", "locations", "production_company", "distributor", "writer", "director"};
     
@@ -47,8 +39,15 @@ public class SearchController extends AbstractController{
         return "home";
     }
     
+    
+    @RequestMapping(value="/byid/{id}", method=RequestMethod.GET)
+    public String byId( @PathVariable long id, Model model ){
+        
+        return sendElasticSearch(BYID_QUERY+id, model);
+    }
+    
     @RequestMapping(value="/autocomplete/{stem}", method=RequestMethod.GET)
-    public String autocomplete( @PathVariable String stem, HttpServletRequest req, Model model ){
+    public String autocomplete( @PathVariable String stem, Model model ){
         
         /*
         {

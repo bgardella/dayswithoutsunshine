@@ -17,7 +17,7 @@ function initialize() {
 }
 
 
-function setNewPin(lat, lng){
+function setNewPin(lat, lng, id){
 	
 	var thePin = new google.maps.MarkerImage('image/pin.png',
 			        new google.maps.Size(15, 22),
@@ -28,14 +28,33 @@ function setNewPin(lat, lng){
 	var mark = new google.maps.Marker({
 	        position: new google.maps.LatLng(lat, lng),
 	        map: theMap,
-	        icon: thePin
+	        icon: thePin,
+	        animation: google.maps.Animation.DROP
 	        });
 	
+	mark.metadata = {id: id};
+	
+	google.maps.event.addListener(mark, 'click', function(){
+		//mark.setAnimation(google.maps.Animation.BOUNCE);
+		
+		callAPI(urlBase+"/byid/"+mark.metadata.id, "byidResponse");
+		//alert(mark.metadata.id);
+	});
+	
 	gmarkers.push(mark);
-}      
+}  
+
+function byidResponse(response){
+	
+	var metaMarkup = "<span class=\"movie-title\">"+response.data._source.title+"</span>";
+	
+	$(".movie-details").html(metaMarkup);
+	$(".movie-details").show();
+}
+
 
 function clearAllPins(){
-	
+	$(".movie-details").hide();
 	$(".drop-down").empty();
 	$(".drop-down").hide();
 	
@@ -76,6 +95,8 @@ function exactSearch(val){
 		  		response.data.hits.hits.length > 0){
 			  
 			  setAllPins(response.data.hits.hits);
+			  
+			  $('#main-search').val(val);
 		  }
 	  });	
 }
@@ -86,7 +107,7 @@ function setAllPins(hits){
 	var lats=[], lngs=[], x=0;
 	
 	for(var i=0;i<hits.length;i++){
-		setNewPin(hits[i]._source.lat,hits[i]._source.lng);
+		setNewPin(hits[i]._source.lat, hits[i]._source.lng, hits[i]._id);
 		lats.push(hits[i]._source.lat);
 		lngs.push(hits[i]._source.lng);
 	}

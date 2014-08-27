@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.logging.Log;
@@ -31,6 +32,29 @@ public abstract class AbstractController {
         try {
             StringRequestEntity requestEntity = new StringRequestEntity(json,"application/json","UTF-8");
             method.setRequestEntity(requestEntity);                                                
+            int statusCode = httpClient.executeMethod(method);
+            if(statusCode == HttpStatus.SC_OK){
+                
+                String responseString = IOUtils.readFully(new InputStreamReader(method.getResponseBodyAsStream(), "utf-8"));
+                JSONParser parser = new JSONParser();
+                JSONObject data = (JSONObject) parser.parse(responseString);
+                
+                returnJsonSuccess(data, model);
+            }
+        } catch (Exception e) {
+           returnJsonFail(e, model);
+        } finally{
+            method.releaseConnection();
+        }
+        
+        return "";
+    }
+    
+    protected String sendElasticSearch(String url, Model model){
+        
+        GetMethod method = new GetMethod(url);
+        
+        try {
             int statusCode = httpClient.executeMethod(method);
             if(statusCode == HttpStatus.SC_OK){
                 

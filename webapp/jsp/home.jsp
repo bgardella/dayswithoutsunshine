@@ -14,7 +14,9 @@
   <input id="main-search" class="search-bar"></input>
   <div class="drop-down"></div>
 
-  <div id="map-canvas" class="home-map"></div>  
+  <div id="map-canvas" class="home-map"></div> 
+  
+  <div class="movie-details"></div> 
 </div>
 
 </body></html>
