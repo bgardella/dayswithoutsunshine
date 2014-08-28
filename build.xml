@@ -49,6 +49,14 @@
     </javac>
   </target>
 	
+	<target name="test" depends="compile">
+		<junit>
+			  <classpath refid="master-classpath"/>
+  			<formatter type="brief" usefile="false" />
+		    <test name="phor.uber.tests.SearchControllerTest"/>
+		</junit>
+	</target>
+	
   <target name="war" depends="compile" description="makes war file">
     <mkdir dir="output/ant/webinflib"/>
     <copy flatten="true" todir="output/ant/webinflib">

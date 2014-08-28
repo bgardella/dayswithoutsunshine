@@ -1,10 +1,9 @@
 package org.gardella.security.dao;
 
-import org.gardella.security.model.LoginSession;
-import org.gardella.security.model.User;
-
 import org.gardella.common.jdbc.AbstractDAO;
 import org.gardella.common.jdbc.ZeroRowsAffectedException;
+import org.gardella.security.model.LoginSession;
+import org.gardella.security.model.User;
 
 
 public class UserDAO extends AbstractDAO {

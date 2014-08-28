@@ -1,0 +1,67 @@
+#### STEPS TO PREPARE ELASTIC_SEARCH FOR AUTOCOMPLETE
+
+
+## ONE: SET UP THE FIELDS
+
+curl -XPUT "http://localhost:9200/locations/" -d'
+{
+   "mappings": {
+      "sf": {
+         "properties": {
+               "actor_1": {
+                  "type": "string"
+               },
+               "actor_2": {
+                  "type": "string"
+               },
+               "actor_3": {
+                  "type": "string"
+               },
+               "director": {
+                  "type": "string"
+               },
+               "distributor": {
+                  "type": "string"
+               },
+               "fun_facts": {
+                  "type": "string"
+               },
+               "locations": {
+                  "type": "string"
+               },
+               "production_company": {
+                  "type": "string"
+               },
+               "release_year": {
+                  "type": "string"
+               },
+               "title": {
+                  "type": "string"
+               },
+               "writer": {
+                  "type": "string"
+               },
+	            "auto_complete": {
+    	           "type": "completion",
+        	       "index_analyzer": "simple",
+            	   "search_analyzer": "simple",
+				   "payloads": false
+            	},
+            	"lat": {
+                  "type": "string"
+                },
+                "lng": {
+                  "type": "string"
+                }
+         }
+      }
+   }
+}'
+
+## TWO
+
+run the indexer....
+
+
+
+

@@ -8,6 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.gardella.security.dao.UserDAO;
+import org.gardella.security.model.User;
+import org.gardella.security.model.UserStatus;
+import org.gardella.security.model.UserType;
+import org.gardella.security.service.CryptoService;
+import org.gardella.security.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,13 +21,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
-
-import org.gardella.security.dao.UserDAO;
-import org.gardella.security.model.User;
-import org.gardella.security.model.UserStatus;
-import org.gardella.security.model.UserType;
-import org.gardella.security.service.CryptoService;
-import org.gardella.security.service.EmailService;
 
 
 @SessionAttributes({"signupInfo"})

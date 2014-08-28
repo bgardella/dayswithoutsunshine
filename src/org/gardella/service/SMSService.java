@@ -6,11 +6,11 @@ import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.gardella.security.model.User;
 
 import com.techventus.server.voice.Voice;
 import com.techventus.server.voice.datatypes.records.SMS;
 import com.techventus.server.voice.datatypes.records.SMSThread;
-import org.gardella.security.model.User;
 
 public class SMSService {
 
