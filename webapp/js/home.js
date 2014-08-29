@@ -73,7 +73,8 @@ var sunshineApp = {
 			actors += ", <span class=\"click-actor_3\">"+response.data._source.actor_3+"</span>";
 		}
 		
-		var metaMarkup = "<span class=\"movie-title\"><span class=\"click-title\">"+response.data._source.title+"</span> (<span class=\"click-year\">"+response.data._source.release_year+"</span>)</span>"+
+		var metaMarkup ="<img src=\"./image/close_btn_grey.png\" width=\"20px\" height=\"20px\" class=\"close-btn\"/>"+ 
+						"<span class=\"movie-title\"><span class=\"click-title\">"+response.data._source.title+"</span> (<span class=\"click-year\">"+response.data._source.release_year+"</span>)</span>"+
 						"<span class=\"movie-attr\"><b>Directed By:</b> <span class=\"click-director\">"+response.data._source.director+"</span></span>"+
 						"<span class=\"movie-attr\"><b>Production Company:</b><br/> <span class=\"click-prodco\">"+response.data._source.production_company+"</span></span>"+
 						"<span class=\"movie-attr\"><b>Actors:</b> "+actors+"</span>"+
@@ -89,6 +90,10 @@ var sunshineApp = {
 		
 		$(".movie-details").html(metaMarkup);
 		$(".movie-details").show();
+		
+		$(".close-btn").click(function(){
+			$(".movie-details").hide();
+		});
 		
 		$('.click-title').click(function(){
 			$(".search-bar").val($(this).text());

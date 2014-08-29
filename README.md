@@ -47,16 +47,17 @@ Deployment
 * Tomcat 7
 * AWS -- EC2 -- Single Spot Instance 
 
+Testing
+--------
+* Junit test harness can be run from ant:  $ant clean test
+* Intern JS test can be run from /test/run-local.js
+
 What Is Missing?
 ----------------
 * N-Gram support for better autocomplete
 * Scheduled Job Process to periodically re-run the indexer to pull new data from the 
 SF-GOV website
 * Mobile/Tablet presentation logic 
-
-What's Left To Do?
-------------------
-* junit testing
-* intern testing
+* Integration with IMDB and Google Image Search, because...why not?
 
 
