@@ -37,8 +37,8 @@ break it out and see for myself.
 
 The Java/Spring/JQuery stack is something I've been using for many years and
 I've built a number of personal projects on this stack. I made it clear in 
-the Java packaging what is new and what is boilerplate from years past.  The 
-javascript/css is somewhat less clear.  
+the Java packaging (org.gardella vs. phor.uber) what is new and what is boilerplate 
+from years past.  The javascript/css/jsp is almost entirely new.  
 
 Tradeoffs
 ---------
@@ -46,7 +46,7 @@ I underestimated the quality of the data.  In order to make it useful, I had
 to spend some time getting it into ElasticSearch in a usable way.  Location data
 had to be harvested without proper addresses.  Google rescued me there. I would
 like to have spend more time thinking how to make the tool more fun.  It's not 
-the best UI to induce discovery.  I did try a few things, but I knew from 
+the best UI to inspire discovery.  I did try a few things, but I knew from 
 experience how much time that can take to get right.  I had to keep it simple.
 
 Deployment
