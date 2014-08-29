@@ -5,6 +5,13 @@ found: [here](https://github.com/uber/coding-challenge-tools)
 
 The finished application can be found here: [http://54.241.0.47/](http://54.241.0.47/)
 
+Who Am I?
+---------
+* [LinkedIN](https://www.linkedin.com/in/bengardella)
+* [github](https://github.com/bgardella)
+* [assembla](https://www.assembla.com/profile/bgardella)
+
+
 Technologies Used
 -----------------
 * Java 1.7
